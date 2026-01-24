@@ -36,7 +36,6 @@ public class UserInterface {
                 case 1:
                     break;
                 case 2:
-
                     break;
                 case 3:
                     break;
@@ -197,6 +196,42 @@ public class UserInterface {
         System.out.println("Highest Volume Exercise: " +
                 GREEN + e.getName() + RESET +
                 " (" + e.calculateTotalVolume() + " lbs)");
+    }
+
+    private void saveWorkout(Workout workout) {
+        if (emptyWorkoutErrorMessage(workout)) {
+            return;
+        }
+        if (storage.saveWorkout(workout)) {
+            System.out.println(GREEN + "Workout Saved!" + RESET);
+            workoutSaved = true;
+        } else {
+            System.out.println(RED + "Could not save workout" + RESET);
+        }
+    }
+
+    private void loadWorkout() {
+        String fileName = chooseWorkoutFile();
+        if (fileName == null) {
+            return;
+        }
+        Workout loadedWorkout = storage.loadWorkout(fileName);
+        loadedWorkoutMenu(loadedWorkout);
+    }
+
+    private void listSavedWorkouts() {
+        List<String> workouts = storage.getSavedWorkouts();
+        if (workouts.isEmpty()) {
+            System.out.println(RED + "No saved workouts found" + RESET);
+            return;
+        }
+        System.out.println(CYAN + "=== Saved Workouts ===" + RESET);
+
+        int fileCounter = 1;
+        for (String workoutData : workouts) {
+            System.out.println(fileCounter + ". " + workoutData);
+            fileCounter++;
+        }
     }
 
     private String chooseWorkoutFile() {
