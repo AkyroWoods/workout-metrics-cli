@@ -103,6 +103,19 @@ public class UserInterface {
             }
         }
     }
+    private void addExerciseToWorkout(Workout workout) {
+        String name = readNonBlankString("Name: ");
+        int sets = readPositiveInteger("Sets: ");
+        int reps = readPositiveInteger("Reps: ");
+        double weight = readNonNegativeDouble("Weight: ");
+        String muscleGroup = readNonBlankString("Muscle Group: ");
+
+        Exercise exercise = new Exercise(name, sets, reps, weight, muscleGroup);
+        workout.addExercise(exercise);
+        workoutSaved = false;
+
+        System.out.println(GREEN + "Exercise added" + RESET);
+    }
 
     private String chooseWorkoutFile() {
         List<String> workouts = storage.getSavedWorkouts();
