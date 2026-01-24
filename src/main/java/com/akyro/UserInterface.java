@@ -88,25 +88,6 @@ public class UserInterface {
                         return;
                     }
                     prepareAnalytics(workout);
-                    System.out.println(CYAN + "Total Workout Volume: " + RESET +
-                            workout.calculateTotalWorkoutVolume() + " lbs");
-                    break;
-
-                case 4:
-                    if (emptyWorkoutErrorMessage(workout)) {
-                        return;
-                    }
-                    prepareAnalytics(workout);
-                    Exercise highestVolume = engine.getHighestVolumeExercise();
-                    System.out.println(GREEN + highestVolume.getName() + RESET +
-                            " had a volume of " + highestVolume.calculateTotalVolume() + " lbs");
-                    break;
-
-                case 5:
-                    if (emptyWorkoutErrorMessage(workout)) {
-                        return;
-                    }
-                    prepareAnalytics(workout);
                     Exercise e = engine.getHighestVolumeExercise();
 
                     System.out.println(CYAN + "\n=== Workout Summary ===" + RESET);
@@ -119,7 +100,7 @@ public class UserInterface {
                             " (" + e.calculateTotalVolume() + " lbs)");
                     break;
 
-                case 6:
+                case 4:
                     if (emptyWorkoutErrorMessage(workout)) {
                         return;
                     }
@@ -127,7 +108,7 @@ public class UserInterface {
                     showWorkoutAnalytics(workout);
                     break;
                 
-                case 7: 
+                case 5: 
                  if (emptyWorkoutErrorMessage(workout)) {
                         return;
                     }
@@ -151,11 +132,9 @@ public class UserInterface {
         System.out.println(CYAN + "=== Commands ===" + RESET);
         System.out.println("1: Add exercise");
         System.out.println("2: List workout");
-        System.out.println("3: Calculate total workout volume");
-        System.out.println("4: Show highest volume exercise");
-        System.out.println("5: Print workout summary");
-        System.out.println("6: Show workout analytics");
-        System.out.println("7: Save workout");
+        System.out.println("3: Print workout summary");
+        System.out.println("4: Show workout analytics");
+        System.out.println("5: Save workout");
         System.out.println("help - List commands again");
         System.out.println("quit - Quit the program");
     }
