@@ -24,246 +24,70 @@ public class UserInterface {
     }
 
     public void start() {
-        System.out.print(CYAN + "Name of Workout: " + RESET);
-        String workoutName = scanner.nextLine();
+       runMainMenu();
+    }
 
-        while (workoutName.isBlank()) {
-            System.out.println(RED + "Invalid workout name" + RESET);
-            System.out.print(CYAN + "Name of Workout: " + RESET);
-            workoutName = scanner.nextLine();
-        }
 
-        Workout workout = new Workout(workoutName);
-
-        System.out.println();
-        commandList();
-
+    private void runMainMenu() {
         while (true) {
-            System.out.println();
-            System.out.print(YELLOW + "Command: " + RESET);
-            String commandInput = scanner.nextLine();
-            commandProcessor(workout, commandInput);
-        }
-    }
+            printMainMenu();
+            int cmd = readPositiveInteger("Command: ");
 
-    public void commandProcessor(Workout workout, String commandInput) {
-
-        if (commandInput.equalsIgnoreCase("help")) {
-            System.out.println();
-            commandList();
-            return;
-        } else if (commandInput.equalsIgnoreCase("quit")) {
-            if (!workoutSaved) {
-                String input = readNonBlankString("Workout not saved, would you like to save [Y/N]: ")
-                        .trim().toLowerCase();
-
-                while (!input.equals("y") && !input.equals("n")) {
-                    input = readNonBlankString("Please enter Y or N: ").trim().toLowerCase();
-                }
-
-                if (input.equalsIgnoreCase("y")) {
-                    if (storage.saveWorkout(workout)) {
-                        System.out.println(GREEN + "Workout Saved!" + RESET);
-                        workoutSaved = true;
-                    } else {
-                        System.out.println(RED + "Could not save workout" + RESET);
-                    }
-                }
-            }
-            System.out.println(YELLOW + "Exiting program..." + RESET);
-            System.exit(0);
-        }
-
-        if (isInteger(commandInput)) {
-            int command = Integer.parseInt(commandInput);
-
-            switch (command) {
-
+            switch (cmd) {
                 case 1:
-                    String name = readNonBlankString("Name: ");
-                    int sets = readPositiveInteger("Sets: ");
-                    int reps = readPositiveInteger("Reps: ");
-                    double weight = readNonNegativeDouble("Weight: ");
-                    String muscleGroup = readNonBlankString("Muscle Group: ");
-
-                    Exercise exercise = new Exercise(name, sets, reps, weight, muscleGroup);
-                    workout.addExercise(exercise);
-                    workoutSaved = false;
-
-                    System.out.println(GREEN + "Exercise added" + RESET);
                     break;
-
                 case 2:
-                    if (emptyWorkoutErrorMessage(workout)) {
-                        return;
-                    }
-                    System.out.println(CYAN + "\n=== Workout List ===" + RESET);
-                    workout.printWorkout();
+                
                     break;
-
                 case 3:
-                    if (emptyWorkoutErrorMessage(workout)) {
-                        return;
-                    }
-                    editExercise(workout);
                     break;
-
                 case 4:
-                    if (emptyWorkoutErrorMessage(workout)) {
-                        return;
-                    }
-                    prepareAnalytics(workout);
-                    Exercise e = engine.getHighestVolumeExercise();
-
-                    System.out.println(CYAN + "\n=== Workout Summary ===" + RESET);
-                    System.out.println("Workout: " + workout.getName());
-                    System.out.println("Total Sets: " + workout.totalSets());
-                    System.out.println("Total Reps: " + workout.totalReps());
-                    System.out.println("Total Volume: " + workout.calculateTotalWorkoutVolume() + " lbs");
-                    System.out.println("Highest Volume Exercise: " +
-                            GREEN + e.getName() + RESET +
-                            " (" + e.calculateTotalVolume() + " lbs)");
                     break;
-
                 case 5:
-                    if (emptyWorkoutErrorMessage(workout)) {
-                        return;
-                    }
-                    prepareAnalytics(workout);
-                    showWorkoutAnalytics(workout);
                     break;
-
                 case 6:
-                    if (emptyWorkoutErrorMessage(workout)) {
-                        return;
-                    }
-                    if (storage.saveWorkout(workout)) {
-                        System.out.println(GREEN + "Workout Saved!" + RESET);
-                        workoutSaved = true;
-                    } else {
-                        System.out.println(RED + "Could not save workout" + RESET);
-                    }
                     break;
-
-                case 7:
-                    String fileName = chooseWorkoutFile();
-                    if (fileName == null){
-                        return;
-                    }
-                    Workout loadedWorkout = storage.loadWorkout(fileName);
-                    break;
-
-                default:
-                    System.out.println(RED + "Unknown command. Type 'help' to see available options" + RESET);
             }
-
-        } else {
-            System.out.println(RED + "Invalid command number. Type 'help' to see valid commands." + RESET);
         }
     }
 
-    private void commandList() {
-        System.out.println(CYAN + "=== Commands ===" + RESET);
-        System.out.println("1: Add exercise");
-        System.out.println("2: List workout");
-        System.out.println("3: Edit exercise");
-        System.out.println("4: Print workout summary");
-        System.out.println("5: Show workout analytics");
-        System.out.println("6: Save workout");
-        System.out.println("7: Load Workout(s)");
-        System.out.println("help - List commands again");
-        System.out.println("quit - Quit the program");
+    private void printMainMenu() {
+        System.out.println(CYAN + "=== Main Menu ===" + RESET);
+        System.out.println("1: Create workout");
+        System.out.println("2: Load dorkout");
+        System.out.println("3: List saved workouts");
+        System.out.println("4: Delete workout");
+        System.out.println("5: Print commands ");
+        System.out.println("6: Quit main menu");
+
     }
 
-    private void editExercise(Workout workout) {
-        workout.printWorkout();
-        System.out.print("Enter number of exericse to edit: ");
-        int exerciseInput = Integer.valueOf(scanner.nextLine()) - 1;
-
-        while (exerciseInput < 0 || exerciseInput >= workout.size()) {
-            System.out.println(RED + "Please enter a valid number");
-            System.out.print("Enter number of exericse to edit: ");
-            exerciseInput = Integer.valueOf(scanner.nextLine()) - 1;
-
-        }
-
-        System.out.println("1: Name");
-        System.out.println("2: Sets");
-        System.out.println("3: Rps");
-        System.out.println("4: Weight");
-        System.out.println("5: Muscle Group");
-        System.out.print("Which would you like to edit: ");
-
-        int menuInput = Integer.valueOf(scanner.nextLine());
-        while (menuInput < 0 || menuInput > 5) {
-            System.out.println(RED + "Enter a number between 1-5" + RESET);
-            System.out.print("Which would you like to edit: ");
-            menuInput = Integer.valueOf(scanner.nextLine());
-        }
-
-        switch (menuInput) {
-            case 1:
-                String name = readNonBlankString("Updated Name: ");
-                workout.getExercises().get(exerciseInput).setName(name);
-                System.out.println(GREEN + "Exericse name updated" + RESET);
-                break;
-
-            case 2:
-                int sets = readPositiveInteger("Updated Sets: ");
-                workout.getExercises().get(exerciseInput).setSets(sets);
-                System.out.println(GREEN + "Sets updated");
-                break;
-
-            case 3:
-                int reps = readPositiveInteger("Updated Reps: ");
-                workout.getExercises().get(exerciseInput).setReps(reps);
-                System.out.println(GREEN + "Reps updated");
-                break;
-
-            case 4:
-                double weight = readNonNegativeDouble("Updated Weight: ");
-                workout.getExercises().get(exerciseInput).setWeight(weight);
-                System.out.println(GREEN + "Weight updates");
-                break;
-
-            case 5:
-                String muscleGroup = readNonBlankString("Updated Muscle Group");
-                workout.getExercises().get(exerciseInput).setMuscleGroup(muscleGroup);
-                System.out.println("Muscle group updated");
-                break;
-
-            default:
-                System.out.println(RED + "Invalid Number" + RESET);
-        }
-        workoutSaved = false;
-    }
     private String chooseWorkoutFile() {
         List<String> workouts = storage.getSavedWorkouts();
-                    if (workouts.isEmpty()) {
-                        System.out.println(RED + "No workouts to load");
-                        return null;
-                    }
-                    System.out.println(CYAN + "=== Saved Workouts ===" + RESET);
+        if (workouts.isEmpty()) {
+            System.out.println(RED + "No workouts to load");
+            return null;
+        }
+        System.out.println(CYAN + "=== Saved Workouts ===" + RESET);
 
-                    int fileCounter = 1;
-                    for (String workoutData : workouts) {
-                        System.out.println(fileCounter + ". " + workoutData);
-                        fileCounter++;
-                    }
-                    System.out.print("Enter the number of the workout to load: ");
-                    int input = Integer.valueOf(scanner.nextLine()) - 1;
+        int fileCounter = 1;
+        for (String workoutData : workouts) {
+            System.out.println(fileCounter + ". " + workoutData);
+            fileCounter++;
+        }
+        System.out.print("Enter the number of the workout to load: ");
+        int input = Integer.valueOf(scanner.nextLine()) - 1;
 
-                    while (input < 0 || input >= workouts.size()) {
-                        System.out.println("Please enter a valid workout to load");
-                        System.out.print("Enter the number of the workout to load: ");
-                        input = Integer.valueOf(scanner.nextLine()) - 1;
-                    }
+        while (input < 0 || input >= workouts.size()) {
+            System.out.println("Please enter a valid workout to load");
+            System.out.print("Enter the number of the workout to load: ");
+            input = Integer.valueOf(scanner.nextLine()) - 1;
+        }
 
-                    String fileName = workouts.get(input);
-                    return fileName;
-                
+        String fileName = workouts.get(input);
+        return fileName;
+
     }
-
 
     private void prepareAnalytics(Workout workout) {
         engine.calculateVolumeBreakdown(workout);
@@ -376,3 +200,15 @@ public class UserInterface {
         }
     }
 }
+ private void commandList() {
+        System.out.println(CYAN + "=== Commands ===" + RESET);
+        System.out.println("1: Add exercise");
+        System.out.println("2: List workout");
+        System.out.println("3: Edit exercise");
+        System.out.println("4: Print workout summary");
+        System.out.println("5: Show workout analytics");
+        System.out.println("6: Save workout");
+        System.out.println("7: Load Workout(s)");
+        System.out.println("help - List commands again");
+        System.out.println("quit - Quit the program");
+    }
