@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -35,7 +38,6 @@ public class WorkoutStorage {
             System.err.println("Failed to save workout: " + e.getMessage());
             return false;
         }
-
     }
 
     private boolean createDirectory() {
@@ -63,5 +65,19 @@ public class WorkoutStorage {
         }
 
         return sanitizedName + ".json";
+    }
+
+    private List<String> listFiles() {
+        Path dirPath = Paths.get("data/");
+        List<String> workouts = new ArrayList<>();
+
+        try (Stream<Path> jsonFiles = Files.list(dirPath)) {
+            jsonFiles.filter(Files:: isRegularFile)
+            .filter(path -> path.getFileName().toString().endsWith(".json"))
+            .forEach(path -> workouts.add(path.getFileName().toString()));
+        } catch (IOException e) {
+            System.err.println("No files in directory: " + e.getMessage());
+        }
+        return workouts;
     }
 }

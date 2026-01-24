@@ -14,16 +14,15 @@ public class UserInterface {
     private Scanner scanner;
     private final AnalyticsEngine engine;
     private final WorkoutStorage storage;
+    private boolean workoutSaved = true;
 
     public UserInterface(Scanner scanner) {
         this.scanner = scanner;
         this.engine = new AnalyticsEngine();
         this.storage = new WorkoutStorage();
-
     }
 
     public void start() {
-
         System.out.print(CYAN + "Name of Workout: " + RESET);
         String workoutName = scanner.nextLine();
 
@@ -53,6 +52,23 @@ public class UserInterface {
             commandList();
             return;
         } else if (commandInput.equalsIgnoreCase("quit")) {
+            if (!workoutSaved) {
+                String input = readNonBlankString("Workout not saved, would you like to save [Y/N]: ")
+                        .trim().toLowerCase();
+
+                while (!input.equals("y") && !input.equals("n")) {
+                    input = readNonBlankString("Please enter Y or N: ").trim().toLowerCase();
+                }
+
+                if (input.equalsIgnoreCase("y")) {
+                    if (storage.saveWorkout(workout)) {
+                        System.out.println(GREEN + "Workout Saved!" + RESET);
+                        workoutSaved = true;
+                    } else {
+                        System.out.println(RED + "Could not save workout" + RESET);
+                    }
+                }
+            }
             System.out.println(YELLOW + "Exiting program..." + RESET);
             System.exit(0);
         }
@@ -71,6 +87,7 @@ public class UserInterface {
 
                     Exercise exercise = new Exercise(name, sets, reps, weight, muscleGroup);
                     workout.addExercise(exercise);
+                    workoutSaved = false;
 
                     System.out.println(GREEN + "Exercise added" + RESET);
                     break;
@@ -121,6 +138,7 @@ public class UserInterface {
                     }
                     if (storage.saveWorkout(workout)) {
                         System.out.println(GREEN + "Workout Saved!" + RESET);
+                        workoutSaved = true;
                     } else {
                         System.out.println(RED + "Could not save workout" + RESET);
                     }
@@ -268,6 +286,7 @@ public class UserInterface {
             default:
                 System.out.println(RED + "Invalid Number" + RESET);
         }
+        workoutSaved = false;
     }
 
     private boolean emptyWorkoutErrorMessage(Workout workout) {
