@@ -34,6 +34,7 @@ public class UserInterface {
 
             switch (cmd) {
                 case 1:
+                    createWorkout();
                     break;
                 case 2:
                     break;
@@ -58,6 +59,18 @@ public class UserInterface {
         System.out.println("5: Print commands ");
         System.out.println("6: Quit main menu");
 
+    }
+     private void createWorkout() {
+        System.out.print(CYAN + "Name of Workout: " + RESET);
+        String workoutName = scanner.nextLine();
+
+        while (workoutName.isBlank()) {
+            System.out.println(RED + "Invalid workout name" + RESET);
+            System.out.print(CYAN + "Name of Workout: " + RESET);
+            workoutName = scanner.nextLine();
+        }
+        Workout workout = new Workout(workoutName);
+        loadedWorkoutMenu(workout);
     }
 
     private void loadedWorkoutMenu(Workout workout) {
@@ -101,6 +114,8 @@ public class UserInterface {
             }
         }
     }
+
+    
 
     private void addExerciseToWorkout(Workout workout) {
         String name = readNonBlankString("Name: ");
