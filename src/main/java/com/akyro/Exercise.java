@@ -52,22 +52,37 @@ public class Exercise {
     }
 
     public void setName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Exercise name cannot be blank");
+        }
         this.name = name;
     }
 
     public void setSets(int sets) {
+        if (sets < 1) {
+            throw new IllegalArgumentException("Sets must be at least 1");
+        }
         this.sets = sets;
     }
 
     public void setReps(int reps) {
+        if (reps < 1) {
+            throw new IllegalArgumentException("Reps must be at least 1");
+        }
         this.reps = reps;
     }
 
     public void setWeight(double weight) {
+        if (weight < 0) {
+            throw new IllegalArgumentException("Weight cannot be negative");
+        }
         this.weight = weight;
     }
 
     public void setMuscleGroup(String muscleGroup) {
+        if (muscleGroup == null || muscleGroup.isBlank()) {
+            throw new IllegalArgumentException("Muscle group cannot be blank");
+        }
         this.muscleGroup = muscleGroup;
     }
 

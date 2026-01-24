@@ -82,8 +82,15 @@ public class UserInterface {
                     System.out.println(CYAN + "\n=== Workout List ===" + RESET);
                     workout.printWorkout();
                     break;
+                
+                case 3: 
+                    if (emptyWorkoutErrorMessage(workout)) {
+                        return;
+                    }
+                    editExercise(workout);
+                    break;
 
-                case 3:
+                case 4:
                     if (emptyWorkoutErrorMessage(workout)) {
                         return;
                     }
@@ -100,7 +107,7 @@ public class UserInterface {
                             " (" + e.calculateTotalVolume() + " lbs)");
                     break;
 
-                case 4:
+                case 5:
                     if (emptyWorkoutErrorMessage(workout)) {
                         return;
                     }
@@ -108,7 +115,7 @@ public class UserInterface {
                     showWorkoutAnalytics(workout);
                     break;
                 
-                case 5: 
+                case 6: 
                  if (emptyWorkoutErrorMessage(workout)) {
                         return;
                     }
@@ -132,9 +139,10 @@ public class UserInterface {
         System.out.println(CYAN + "=== Commands ===" + RESET);
         System.out.println("1: Add exercise");
         System.out.println("2: List workout");
-        System.out.println("3: Print workout summary");
-        System.out.println("4: Show workout analytics");
-        System.out.println("5: Save workout");
+        System.out.println("3: Edit exercise");
+        System.out.println("4: Print workout summary");
+        System.out.println("5: Show workout analytics");
+        System.out.println("6: Save workout");
         System.out.println("help - List commands again");
         System.out.println("quit - Quit the program");
     }
@@ -197,6 +205,67 @@ public class UserInterface {
             } catch (NumberFormatException e) {
                 System.out.println(RED + "Please enter a number" + RESET);
             }
+        }
+    }
+    private void editExercise(Workout workout) {
+        workout.printWorkout();
+        System.out.print("Enter number of exericse to edit: ");
+        int exerciseInput = Integer.valueOf(scanner.nextLine()) - 1;
+
+        while (exerciseInput < 0 || exerciseInput >= workout.size()) {
+            System.out.println(RED + "Please enter a valid number");
+            System.out.print("Enter number of exericse to edit: ");
+            exerciseInput = Integer.valueOf(scanner.nextLine()) - 1;
+            
+        }
+
+        System.out.println("1: Name");
+        System.out.println("2: Sets");
+        System.out.println("3: Rps");
+        System.out.println("4: Weight");
+        System.out.println("5: Muscle Group");
+        System.out.print("Which would you like to edit: ");
+
+        int menuInput = Integer.valueOf(scanner.nextLine());
+        while (menuInput < 0 || menuInput > 5) {
+            System.out.println(RED + "Enter a number between 1-5" + RESET);
+            System.out.print("Which would you like to edit: ");
+            menuInput = Integer.valueOf(scanner.nextLine());
+        }
+
+        switch(menuInput) {
+            case 1: 
+            String name = readNonBlankString("Updated Name: ");
+            workout.getExercises().get(exerciseInput).setName(name);
+            System.out.println(GREEN + "Exericse name updated" + RESET);
+            break;
+
+            case 2:
+                int sets = readPositiveInteger("Updated Sets: ");
+                workout.getExercises().get(exerciseInput).setSets(sets);
+                System.out.println(GREEN + "Sets updated");
+                break;
+            
+            case 3: 
+            int reps = readPositiveInteger("Updated Reps: ");
+            workout.getExercises().get(exerciseInput).setReps(reps);
+            System.out.println(GREEN + "Reps updated");
+            break;
+
+            case 4:
+                double weight = readNonNegativeDouble("Updated Weight: ");
+                workout.getExercises().get(exerciseInput).setWeight(weight);
+                System.out.println(GREEN + "Weight updates");
+                break;
+            
+            case 5: 
+            String muscleGroup = readNonBlankString("Updated Muscle Group");
+            workout.getExercises().get(exerciseInput).setMuscleGroup(muscleGroup);
+            System.out.println("Muscle group updated");
+            break;
+            
+            default: 
+            System.out.println(RED + "Invalid Number" + RESET);
         }
     }
 
