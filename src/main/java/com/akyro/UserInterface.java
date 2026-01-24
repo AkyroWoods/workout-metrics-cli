@@ -37,10 +37,13 @@ public class UserInterface {
                     createWorkout();
                     break;
                 case 2:
+                    loadWorkout();
                     break;
                 case 3:
+                    listSavedWorkouts();
                     break;
                 case 4:
+                    deleteWorkout();
                     break;
                 case 5:
                     break;
@@ -53,14 +56,15 @@ public class UserInterface {
     private void printMainMenu() {
         System.out.println(CYAN + "=== Main Menu ===" + RESET);
         System.out.println("1: Create workout");
-        System.out.println("2: Load dorkout");
+        System.out.println("2: Load workout");
         System.out.println("3: List saved workouts");
         System.out.println("4: Delete workout");
         System.out.println("5: Print commands ");
         System.out.println("6: Quit main menu");
 
     }
-     private void createWorkout() {
+
+    private void createWorkout() {
         System.out.print(CYAN + "Name of Workout: " + RESET);
         String workoutName = scanner.nextLine();
 
@@ -71,6 +75,68 @@ public class UserInterface {
         }
         Workout workout = new Workout(workoutName);
         loadedWorkoutMenu(workout);
+    }
+
+    private void loadWorkout() {
+        String fileName = chooseWorkoutFile();
+        if (fileName == null) {
+            return;
+        }
+        Workout loadedWorkout = storage.loadWorkout(fileName);
+        loadedWorkoutMenu(loadedWorkout);
+    }
+
+    private void listSavedWorkouts() {
+        List<String> workouts = storage.getSavedWorkouts();
+        if (workouts.isEmpty()) {
+            System.out.println(RED + "No saved workouts found" + RESET);
+            return;
+        }
+        System.out.println(CYAN + "=== Saved Workouts ===" + RESET);
+
+        int fileCounter = 1;
+        for (String workoutData : workouts) {
+            System.out.println(fileCounter + ". " + workoutData);
+            fileCounter++;
+        }
+    }
+
+    private void deleteWorkout() {
+        List<String> workouts = storage.getSavedWorkouts();
+        if (workouts.isEmpty()) {
+            System.out.println(RED + "No saved workouts to delete." + RESET);
+            return;
+        }
+        System.out.println(CYAN + "=== Delete Workout ===" + RESET);
+        int fileCounter = 1;
+        for (String workoutData : workouts) {
+            System.out.println(fileCounter + ". " + workoutData);
+            fileCounter++;
+        }
+
+        int cmd = readPositiveInteger("Command: ") - 1;
+
+        while (cmd < 0 || cmd >= workouts.size()) {
+            System.out.println(RED + "Invalid Option. Try again" + RESET);
+            cmd = readPositiveInteger("Choose a workout to delete: ") - 1;
+        }
+        String workoutToDelete = workouts.get(cmd);
+
+        System.out.print(YELLOW + "Are you sure you want to delete '" + workoutToDelete + "'? (y/n): " + RESET);
+        String confirm = scanner.nextLine().trim().toLowerCase();
+
+        if (!confirm.equals("y")) {
+            System.out.println(CYAN + "Deletion cancelled." + RESET);
+            return;
+        }
+
+        boolean success = storage.deleteWorkout(workoutToDelete);
+
+        if (success) {
+            System.out.println(GREEN + "Workout deleted." + RESET);
+        } else {
+            System.out.println(RED + "Failed to delete workout." + RESET);
+        }
     }
 
     private void loadedWorkoutMenu(Workout workout) {
@@ -115,8 +181,6 @@ public class UserInterface {
         }
     }
 
-    
-
     private void addExerciseToWorkout(Workout workout) {
         String name = readNonBlankString("Name: ");
         int sets = readPositiveInteger("Sets: ");
@@ -132,6 +196,9 @@ public class UserInterface {
     }
 
     private void printWorkoutList(Workout workout) {
+        if (emptyWorkoutErrorMessage(workout)) {
+            return;
+        }
         workout.printWorkout();
     }
 
@@ -222,30 +289,6 @@ public class UserInterface {
             workoutSaved = true;
         } else {
             System.out.println(RED + "Could not save workout" + RESET);
-        }
-    }
-
-    private void loadWorkout() {
-        String fileName = chooseWorkoutFile();
-        if (fileName == null) {
-            return;
-        }
-        Workout loadedWorkout = storage.loadWorkout(fileName);
-        loadedWorkoutMenu(loadedWorkout);
-    }
-
-    private void listSavedWorkouts() {
-        List<String> workouts = storage.getSavedWorkouts();
-        if (workouts.isEmpty()) {
-            System.out.println(RED + "No saved workouts found" + RESET);
-            return;
-        }
-        System.out.println(CYAN + "=== Saved Workouts ===" + RESET);
-
-        int fileCounter = 1;
-        for (String workoutData : workouts) {
-            System.out.println(fileCounter + ". " + workoutData);
-            fileCounter++;
         }
     }
 
@@ -388,16 +431,3 @@ public class UserInterface {
     }
 
 }
-
- private void commandList() {
-        System.out.println(CYAN + "=== Commands ===" + RESET);
-        System.out.println("1: Add exercise");
-        System.out.println("2: List workout");
-        System.out.println("3: Edit exercise");
-        System.out.println("4: Print workout summary");
-        System.out.println("5: Show workout analytics");
-        System.out.println("6: Save workout");
-        System.out.println("7: Load Workout(s)");
-        System.out.println("help - List commands again");
-        System.out.println("quit - Quit the program");
-    }
