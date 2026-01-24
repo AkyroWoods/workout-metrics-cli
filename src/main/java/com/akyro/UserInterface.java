@@ -62,6 +62,48 @@ public class UserInterface {
 
     }
 
+    private void loadedWorkoutMenu(Workout workout) {
+        while (true) {
+            System.out.println(CYAN + "=== Workout: " + workout.getName() + " ===" + RESET);
+            System.out.println("1: Add exercise");
+            System.out.println("2: List workout");
+            System.out.println("3: Edit exercise");
+            System.out.println("4: View summary");
+            System.out.println("5: View analytics");
+            System.out.println("6: Save workout");
+            System.out.println("7: Return to main menu");
+
+            int cmd = readPositiveInteger("Command: ");
+
+            while (cmd < 1 || cmd > 7) {
+                System.out.println(RED + "Invalid Option. Please choose 1-7." + RESET);
+                cmd = readPositiveInteger("Command: ");
+            }
+            switch (cmd) {
+                case 1:
+                    addExerciseToWorkout(workout);
+                    break;
+                case 2:
+                    printWorkoutList(workout);
+                    break;
+                case 3:
+                    editExercise(workout);
+                    break;
+                case 4:
+                    viewWorkoutSummary(workout);
+                    break;
+                case 5:
+                    showWorkoutAnalytics(workout);
+                    break;
+                case 6:
+                    saveWorkout(workout);
+                    break;
+                case 7:
+                    return;
+            }
+        }
+    }
+
     private String chooseWorkoutFile() {
         List<String> workouts = storage.getSavedWorkouts();
         if (workouts.isEmpty()) {
