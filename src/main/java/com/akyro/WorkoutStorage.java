@@ -51,6 +51,14 @@ public class WorkoutStorage {
        }
     }
 
+    public boolean deleteWorkout(String filename) {
+        File file = new File(DATA_DIR, filename);
+        return file.delete();
+    }
+    public List<String> getSavedWorkouts() {
+        return listFiles();
+    }
+
     private boolean createDirectory() {
         String dirname = DATA_DIR;
         Path path = Paths.get(dirname);
@@ -76,10 +84,6 @@ public class WorkoutStorage {
         }
 
         return sanitizedName + ".json";
-    }
-
-    public List<String> getSavedWorkouts() {
-        return listFiles();
     }
 
     private List<String> listFiles() {

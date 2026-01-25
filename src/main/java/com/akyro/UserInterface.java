@@ -28,8 +28,8 @@ public class UserInterface {
     }
 
     private void runMainMenu() {
+        printMainMenu();
         while (true) {
-            printMainMenu();
             int cmd = readPositiveInteger("Command: ");
 
             switch (cmd) {
@@ -41,6 +41,8 @@ public class UserInterface {
                     break;
                 case 3:
                     listSavedWorkouts();
+                    System.out.println();
+                    printMainMenu();
                     break;
                 case 4:
                     deleteWorkout();
@@ -49,7 +51,10 @@ public class UserInterface {
                     help();
                     break;
                 case 6:
+                    quit();
                     break;
+                default:
+                    System.out.println(RED + "Unknown command. Type 5 to see available options" + RESET);
             }
         }
     }
@@ -66,15 +71,16 @@ public class UserInterface {
     }
 
     private void createWorkout() {
-        System.out.print(CYAN + "Name of Workout: " + RESET);
-        String workoutName = scanner.nextLine();
+        String workoutName = readNonBlankString(CYAN + "Name of Workout: " + RESET);
 
         while (workoutName.isBlank()) {
             System.out.println(RED + "Invalid workout name" + RESET);
             System.out.print(CYAN + "Name of Workout: " + RESET);
-            workoutName = scanner.nextLine();
+            workoutName = readNonBlankString(CYAN + "Name of Workout: " + RESET);
         }
         Workout workout = new Workout(workoutName);
+        System.out.println();
+
         loadedWorkoutMenu(workout);
     }
 
@@ -115,7 +121,7 @@ public class UserInterface {
             fileCounter++;
         }
 
-        int cmd = readPositiveInteger("Command: ") - 1;
+        int cmd = readPositiveInteger("Choose a workout to delete: ") - 1;
 
         while (cmd < 0 || cmd >= workouts.size()) {
             System.out.println(RED + "Invalid Option. Try again" + RESET);
@@ -144,20 +150,18 @@ public class UserInterface {
         printMainMenu();
     }
 
-    private void loadedWorkoutMenu(Workout workout) {
-        while (true) {
-            System.out.println(CYAN + "=== Workout: " + workout.getName() + " ===" + RESET);
-            System.out.println("1: Add exercise");
-            System.out.println("2: List workout");
-            System.out.println("3: Edit exercise");
-            System.out.println("4: View summary");
-            System.out.println("5: View analytics");
-            System.out.println("6: Save workout");
-            System.out.println("7: Return to main menu");
+    public void quit() {
+        System.out.println(YELLOW + "Exiting program..." + RESET);
+        System.exit(0);
+    }
 
+    private void loadedWorkoutMenu(Workout workout) {
+        printLoadedWorkoutMenu(workout);
+
+        while (true) {
             int cmd = readPositiveInteger("Command: ");
 
-            while (cmd < 1 || cmd > 7) {
+            while (cmd < 1 || cmd > 8) {
                 System.out.println(RED + "Invalid Option. Please choose 1-7." + RESET);
                 cmd = readPositiveInteger("Command: ");
             }
@@ -173,6 +177,7 @@ public class UserInterface {
                     break;
                 case 4:
                     viewWorkoutSummary(workout);
+                    printLoadedWorkoutMenu(workout);
                     break;
                 case 5:
                     showWorkoutAnalytics(workout);
@@ -181,9 +186,27 @@ public class UserInterface {
                     saveWorkout(workout);
                     break;
                 case 7:
-                    return;
+                    printLoadedWorkoutMenu(workout);
+                    break;
+                case 8:
+                    if (handleQuitLoadedMenu(workout)) {
+                        return;
+                    }
+                    break;
             }
         }
+    }
+
+    private void printLoadedWorkoutMenu(Workout workout) {
+        System.out.println(CYAN + "=== Workout: " + workout.getName() + " ===" + RESET);
+        System.out.println("1: Add exercise");
+        System.out.println("2: List workout");
+        System.out.println("3: Edit exercise");
+        System.out.println("4: View summary");
+        System.out.println("5: View analytics");
+        System.out.println("6: Save workout");
+        System.out.println("7: Reprint commands");
+        System.out.println("8: Return to main menu");
     }
 
     private void addExerciseToWorkout(Workout workout) {
@@ -196,8 +219,8 @@ public class UserInterface {
         Exercise exercise = new Exercise(name, sets, reps, weight, muscleGroup);
         workout.addExercise(exercise);
         workoutSaved = false;
-
         System.out.println(GREEN + "Exercise added" + RESET);
+
     }
 
     private void printWorkoutList(Workout workout) {
@@ -205,14 +228,17 @@ public class UserInterface {
             return;
         }
         workout.printWorkout();
+        System.out.println();
     }
 
     private void editExercise(Workout workout) {
         if (emptyWorkoutErrorMessage(workout)) {
             return;
         }
+        System.out.println();
         workout.printWorkout();
-        System.out.print("Enter number of exericse to edit: ");
+
+        System.out.print(YELLOW + "Enter number of exericse to edit: " + RESET);
         int exerciseInput = Integer.valueOf(scanner.nextLine()) - 1;
 
         while (exerciseInput < 0 || exerciseInput >= workout.size()) {
@@ -221,10 +247,11 @@ public class UserInterface {
             exerciseInput = Integer.valueOf(scanner.nextLine()) - 1;
 
         }
+        System.out.println();
 
         System.out.println("1: Name");
         System.out.println("2: Sets");
-        System.out.println("3: Rps");
+        System.out.println("3: Reps");
         System.out.println("4: Weight");
         System.out.println("5: Muscle Group");
         System.out.print("Which would you like to edit: ");
@@ -255,7 +282,7 @@ public class UserInterface {
             case 4:
                 double weight = readNonNegativeDouble("Updated Weight: ");
                 workout.getExercises().get(exerciseInput).setWeight(weight);
-                System.out.println(GREEN + "Weight updates");
+                System.out.println(GREEN + "Weight updated");
                 break;
             case 5:
                 String muscleGroup = readNonBlankString("Updated Muscle Group");
@@ -283,6 +310,7 @@ public class UserInterface {
         System.out.println("Highest Volume Exercise: " +
                 GREEN + e.getName() + RESET +
                 " (" + e.calculateTotalVolume() + " lbs)");
+        System.out.println();
     }
 
     private void saveWorkout(Workout workout) {
@@ -295,6 +323,18 @@ public class UserInterface {
         } else {
             System.out.println(RED + "Could not save workout" + RESET);
         }
+    }
+
+    private boolean handleQuitLoadedMenu(Workout workout) {
+        if (!workoutSaved) {
+            System.out.print(YELLOW + "You have unsaved changes. Save before returning? (y/n): " + RESET);
+            String input = scanner.nextLine().trim().toLowerCase();
+
+            if (input.equals("y")) {
+                saveWorkout(workout);
+            }
+        }
+        return true; // signal to exit loaded menu
     }
 
     private String chooseWorkoutFile() {
@@ -390,6 +430,10 @@ public class UserInterface {
 
             if (input.isBlank()) {
                 System.out.println(RED + "Please enter a non blank name" + RESET);
+                continue;
+            }
+            if (!input.matches(".*[a-zA-Z].*")) {
+                System.out.println(RED + "Exercise name must contain at least one letter" + RESET);
                 continue;
             }
             return input;

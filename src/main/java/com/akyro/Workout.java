@@ -29,7 +29,7 @@ public class Workout {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public void addExercise(Exercise exercise) {
         exercises.add(exercise);
     }
@@ -44,7 +44,7 @@ public class Workout {
     public void printWorkout() {
         int exerciseCounter = 1;
         for (Exercise e: exercises) {
-            System.out.println(exerciseCounter +" " + e.toString());
+            System.out.println(exerciseCounter + ". " + e.toString());
             exerciseCounter++;
         }
     }
