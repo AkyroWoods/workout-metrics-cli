@@ -11,7 +11,7 @@ public class WorkoutComparison {
     private List<String> uniqueToB;
     private List<String> commonExercises;
 
-    public WorkoutComparison(Double volumeA, Double volumeB, Double volumeDifference,
+    public WorkoutComparison(double volumeA, double volumeB, double volumeDifference,
         List<String> uniqueToA, List<String> uniqueToB, List<String> commonExercises)
     {
         this.volumeA = volumeA;

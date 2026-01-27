@@ -334,7 +334,7 @@ public class UserInterface {
                 saveWorkout(workout);
             }
         }
-        return true; // signal to exit loaded menu
+        return true;
     }
 
     private String chooseWorkoutFile() {
@@ -393,9 +393,9 @@ public class UserInterface {
 
         var ppl = engine.volumePercentageSplit();
         System.out.println(YELLOW + "\nPush / Pull / Legs Split:" + RESET);
-        System.out.println(" - Push: " + formatPercent(ppl.get("Push")));
-        System.out.println(" - Pull: " + formatPercent(ppl.get("Pull")));
-        System.out.println(" - Legs: " + formatPercent(ppl.get("Legs")));
+        System.out.println(" - Push: " + formatSafePercent(ppl.get("Push")));
+        System.out.println(" - Pull: " + formatSafePercent(ppl.get("Pull")));
+        System.out.println(" - Legs: " + formatSafePercent(ppl.get("Legs")));
 
         Exercise highest = engine.getHighestVolumeExercise();
         System.out.println(YELLOW + "\nHighest Volume Exercise:" + RESET);
@@ -413,6 +413,13 @@ public class UserInterface {
 
     private String formatPercent(double value) {
         return String.format("%.2f%%", value * 100);
+    }
+
+    private String formatSafePercent(double value) {
+        if (value <= 0) {
+            System.out.println("No data available");
+        } 
+        return formatPercent(value);
     }
 
     private boolean isInteger(String input) {
