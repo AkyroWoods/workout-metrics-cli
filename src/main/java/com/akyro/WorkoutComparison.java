@@ -12,15 +12,14 @@ public class WorkoutComparison {
     private List<String> commonExercises;
 
     public WorkoutComparison(double volumeA, double volumeB, double volumeDifference,
-        List<String> uniqueToA, List<String> uniqueToB, List<String> commonExercises)
-    {
+            List<String> uniqueToA, List<String> uniqueToB, List<String> commonExercises) {
         this.volumeA = volumeA;
         this.volumeB = volumeB;
         this.volumeDifference = volumeDifference;
         this.uniqueToA = uniqueToA;
         this.uniqueToB = uniqueToB;
         this.commonExercises = commonExercises;
-    
+
     }
 
     public double getVolumeA() {
@@ -70,6 +69,12 @@ public class WorkoutComparison {
     public void setCommonExercises(List<String> commonExercises) {
         this.commonExercises = commonExercises;
     }
-    
+
+    public double volumeDifferenceAsPercent() {
+        if (volumeA == 0) {
+            return 0;
+        }
+        return (double) volumeDifference / volumeA;
+    }
 
 }

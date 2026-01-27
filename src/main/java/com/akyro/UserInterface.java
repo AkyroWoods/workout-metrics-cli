@@ -45,12 +45,15 @@ public class UserInterface {
                     printMainMenu();
                     break;
                 case 4:
-                    deleteWorkout();
+                    compareWorkouts();
                     break;
                 case 5:
-                    printMainHelp();
+                    deleteWorkout();
                     break;
                 case 6:
+                    printMainHelp();
+                    break;
+                case 7:
                     quit();
                     break;
                 default:
@@ -64,9 +67,10 @@ public class UserInterface {
         System.out.println("1: Create workout");
         System.out.println("2: Load workout");
         System.out.println("3: List saved workouts");
-        System.out.println("4: Delete workout");
-        System.out.println("5: Help/Reprint commands ");
-        System.out.println("6: Quit main menu");
+        System.out.println("4: Compare two workouts");
+        System.out.println("5: Delete workout");
+        System.out.println("6: Help/Reprint commands ");
+        System.out.println("7: Quit main menu");
 
     }
 
@@ -106,6 +110,65 @@ public class UserInterface {
             System.out.println(fileCounter + ". " + workoutData);
             fileCounter++;
         }
+    }
+
+    private void compareWorkouts() {
+        if (storage.getSavedWorkouts().size() == 0) {
+            System.out.println(RED + "Insufficient workout data, please log 2 workouts minimum to compare");
+        }
+        Workout a = storage.loadWorkout(chooseWorkoutFile());
+        System.out.println(YELLOW + "First Workout Selected" + RESET);
+        Workout b = storage.loadWorkout(chooseWorkoutFile());
+        WorkoutComparison result = engine.compareWorkouts(a, b);
+        System.out.println();
+        printComparison(result, a, b);
+    }
+
+    private void printComparison(WorkoutComparison result, Workout a, Workout b) {
+        printCondensedWorkoutSummary(a);
+        System.out.println("--------------------------------------------------");
+        System.out.println();
+        printCondensedWorkoutSummary(b);
+
+        System.out.println(CYAN + "=== " + a.getName() + " V.S " + b.getName() + " ===" + RESET);
+
+        double percent = result.volumeDifferenceAsPercent();
+        if (a.calculateTotalWorkoutVolume() > b.calculateTotalWorkoutVolume()) {
+            System.out.println(a.getName() + " volume was greater by +" + result.getVolumeDifference()
+                    + " lbs (+" + formatPercent(percent) + ")");
+        } else if (b.calculateTotalWorkoutVolume() > a.calculateTotalWorkoutVolume()) {
+            System.out.println(b.getName() + " volume was greater by +" + result.getVolumeDifference()
+                    + " lbs (+" + formatPercent(percent) + ")");
+        } else {
+            System.out.println("No difference in volume");
+        }
+
+        System.out.println();
+
+        System.out.println("Common Exercises: ");
+        if (result.getCommonExercises().size() == 0) {
+            System.out.println(YELLOW + " - None in common" + RESET);
+        }
+        result.getCommonExercises().forEach(e -> System.out.println(" - " + e));
+        System.out.println();
+
+        System.out.println("Unique to " + a.getName() + ":");
+        result.getUniqueToA().forEach(e -> System.out.println(" - " + e));
+        System.out.println();
+
+        System.out.println("Unique to " + b.getName() + ":");
+        result.getUniqueToB().forEach(e -> System.out.println(" - " + e));
+        System.out.println();
+    }
+
+    private void printCondensedWorkoutSummary(Workout workout) {
+        System.out.println(CYAN + " === " + workout.getName() + " Summary" + " ===" + RESET);
+        System.out.println("Total Volume: " + workout.calculateTotalWorkoutVolume() + " lbs");
+        System.out.println("Exercises:");
+        for (Exercise e : workout.getExercises()) {
+            System.out.println(" - " + e.getName() + ": " + e.calculateTotalVolume() + " lbs");
+        }
+        System.out.println();
     }
 
     private void deleteWorkout() {
@@ -182,10 +245,10 @@ public class UserInterface {
                 case 5:
                     printLoadedWorkoutMenu(workout);
                     break;
-                    case 6:
+                case 6:
                     showWorkoutAnalytics(workout);
                     break;
-                    case 7:
+                case 7:
                     saveWorkout(workout);
                     break;
                 case 8:
@@ -418,7 +481,7 @@ public class UserInterface {
     private String formatSafePercent(double value) {
         if (value <= 0) {
             System.out.println("No data available");
-        } 
+        }
         return formatPercent(value);
     }
 

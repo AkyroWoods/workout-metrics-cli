@@ -119,7 +119,7 @@ public class AnalyticsEngine {
         ppl.put("Legs", getLegsPercentage());
         return ppl;
     }
-    
+
     public WorkoutComparison compareWorkouts(Workout a, Workout b) {
         double aVolume = a.calculateTotalWorkoutVolume();
         double bVolume = b.calculateTotalWorkoutVolume();
@@ -129,10 +129,10 @@ public class AnalyticsEngine {
 
         List<String> uniqueToA = uniqueExercises(namesA, namesB);
         List<String> uniqueToB = uniqueExercises(namesB, namesA);
-        List<String> commonExercises = sharedExercises(namesA, namesB);
+        List<String> commonExercises = commonExercises(namesA, namesB);
 
         return new WorkoutComparison(aVolume, bVolume, volumeDifference,
-             uniqueToA, uniqueToB, commonExercises);
+                uniqueToA, uniqueToB, commonExercises);
     }
 
     public double getPushPercentage() {
@@ -165,13 +165,13 @@ public class AnalyticsEngine {
     }
 
     private Set<String> getExerciseNames(Workout workout) {
-       return workout.getExercises()
-       .stream()
-       .map(Exercise :: getName)
-       .collect(Collectors.toSet());
+        return workout.getExercises()
+                .stream()
+                .map(Exercise::getName)
+                .collect(Collectors.toSet());
     }
 
-    private List<String> sharedExercises(Set<String> a, Set<String> b) {
+    private List<String> commonExercises(Set<String> a, Set<String> b) {
         Set<String> exercises = new HashSet<>(a);
         exercises.retainAll(b);
         return new ArrayList<>(exercises);
