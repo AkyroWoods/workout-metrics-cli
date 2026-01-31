@@ -1,4 +1,4 @@
-package com.akyro;
+package analytics;
 
 import java.util.List;
 
