@@ -46,6 +46,7 @@ public class AnalyticsPrinter {
         System.out.println(" - " + GREEN + highest.getName() + RESET +
                 " (" + highest.calculateTotalVolume() + " lbs)");
     }
+
     private String formatPercent(double value) {
         return String.format("%.2f%%", value * 100);
     }
@@ -85,7 +86,7 @@ public class AnalyticsPrinter {
     }
 
     private void printVolumeDifference(WorkoutComparison result, Workout a, Workout b) {
-         double percent = result.volumeDifferenceAsPercent();
+        double percent = result.volumeDifferenceAsPercent();
         if (a.calculateTotalWorkoutVolume() > b.calculateTotalWorkoutVolume()) {
             System.out.println(a.getName() + " volume was greater by +" + result.getVolumeDifference()
                     + " lbs (+" + formatPercent(percent) + ")");

@@ -267,7 +267,7 @@ public class UserInterface {
         System.out.println("Total Sets: " + workout.totalSets());
         System.out.println("Total Reps: " + workout.totalReps());
         System.out.println("Total Volume: " + workout.calculateTotalWorkoutVolume() + " lbs");
-        
+
         System.out.println();
     }
 

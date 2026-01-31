@@ -8,7 +8,7 @@ public class PrintMenus {
     public PrintMenus() {
 
     }
-    
+
     public void printMainMenu() {
         System.out.println(CYAN + "=== Main Menu ===" + RESET);
         System.out.println("1: Create workout");

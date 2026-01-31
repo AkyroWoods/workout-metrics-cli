@@ -32,16 +32,17 @@ public class WorkoutEditor {
         System.out.println("3: Reps");
         System.out.println("4: Weight");
         System.out.println("5: Muscle Group");
+        System.out.println("6: Done editing");
 
         while (true) {
             int editField = inputReader.readMenuChoice("Choose a field to edit",
-                    EDIT_FIELD_MIN, EDIT_FIELD_MAX) - 1;
+                    EDIT_FIELD_MIN, EDIT_FIELD_MAX);
 
             switch (editField) {
                 case EDIT_NAME -> editedExercise.setName(inputReader.readNonBlankString("Updated Name: "));
-                case EDIT_WEIGHT -> editedExercise.setSets(inputReader.readPositiveInteger("Updated Sets: "));
-                case EDIT_SETS -> editedExercise.setReps(inputReader.readPositiveInteger("Updated Reps: "));
-                case EDIT_REPS -> editedExercise.setWeight(inputReader.readNonNegativeDouble("Updated Weight: "));
+                case EDIT_SETS -> editedExercise.setSets(inputReader.readPositiveInteger("Updated Sets: "));
+                case EDIT_REPS -> editedExercise.setReps(inputReader.readPositiveInteger("Updated Reps: "));
+                case EDIT_WEIGHT -> editedExercise.setWeight(inputReader.readNonNegativeDouble("Updated Weight: "));
                 case EDIT_MUSCLE_GROUP ->
                     editedExercise.setMuscleGroup(inputReader.readNonBlankString("Updated Muscle Group: "));
                 case DONE_EDITING -> {

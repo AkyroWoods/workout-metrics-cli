@@ -15,13 +15,14 @@ public class InputReader {
 
     public int readMenuChoice(String prompt, int min, int max) {
         while (true) {
-            int input = readPositiveInteger(prompt); 
+            int input = readPositiveInteger(prompt);
             if (input >= min && input <= max) {
                 return input;
             }
             System.out.println(RED + "Please enter a number betwen " + min + " and " + max + RESET);
         }
     }
+
     public boolean isInteger(String input) {
         try {
             Integer.parseInt(input);
