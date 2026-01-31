@@ -40,12 +40,13 @@ public class UserInterface {
     }
 
     private static final int CREATE_WORKOUT = 1;
-    private static final int LOAD_WORKOUT = 2;
-    private static final int LIST_SAVED_WORKOUTS = 3;
-    private static final int COMPARE_TWO_WORKOUTS = 4;
-    private static final int DELETE_WORKOUT = 5;
-    private static final int REPRINT_COMMANDS_MAIN = 6;
-    private static final int QUIT_MAIN_MENU = 7;
+    private static final int LOAD_A_WORKOUT = 2;
+    private static final int LOAD_ALL_WORKOUTS = 3;
+    private static final int LIST_SAVED_WORKOUTS = 4;
+    private static final int COMPARE_TWO_WORKOUTS = 5;
+    private static final int DELETE_WORKOUT = 6;
+    private static final int REPRINT_COMMANDS_MAIN = 7;
+    private static final int QUIT_MAIN_MENU = 8;
 
     private static final int MAIN_MENU_MIN = 1;
     private static final int MAIN_MENU_MAX = 8;
@@ -60,8 +61,11 @@ public class UserInterface {
                 case CREATE_WORKOUT:
                     createWorkout();
                     break;
-                case LOAD_WORKOUT:
+                case LOAD_A_WORKOUT:
                     loadWorkout();
+                    break;
+                case LOAD_ALL_WORKOUTS:
+                    loadAllWorkouts();
                     break;
                 case LIST_SAVED_WORKOUTS:
                     listSavedWorkouts();
@@ -101,6 +105,19 @@ public class UserInterface {
         }
         Workout loadedWorkout = storage.loadWorkout(fileName);
         loadedWorkoutMenu(loadedWorkout);
+    }
+
+    private void loadAllWorkouts() {
+        List<Workout> loadedWorkouts = storage.loadAllWorkouts();
+
+        if (loadedWorkouts.isEmpty()) {
+            System.out.println(RED + "No saved workouts found" + RESET);
+        }
+
+        System.out.println(CYAN + "Loaded " + loadedWorkouts.size() + " workouts successfully" + RESET);
+        for (Workout workout: loadedWorkouts) {
+            System.out.println(GREEN + "Loaded: " + workout.getName() + " .json" + RESET);
+        }
     }
 
     private void listSavedWorkouts() {

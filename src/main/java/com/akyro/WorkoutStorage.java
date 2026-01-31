@@ -2,6 +2,7 @@ package com.akyro;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,6 +49,22 @@ public class WorkoutStorage {
             System.err.println("Failed to load workout file: " + e.getMessage());
             return null;
         }
+    }
+    public List<Workout> loadAllWorkouts() {
+        List<Workout> workouts = new ArrayList<>();
+        Path path = Paths.get(DATA_DIR);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, "*.json")) {
+            for (Path entry: stream) {
+                String fileName = entry.getFileName().toString();
+                Workout loadedWorkout = loadWorkout(fileName);
+                if (loadedWorkout != null) {
+                    workouts.add(loadedWorkout);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to load all workouts: " + e.getMessage());
+        }
+        return workouts;
     }
 
     public boolean deleteWorkout(String filename) {
