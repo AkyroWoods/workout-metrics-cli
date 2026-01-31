@@ -91,7 +91,7 @@ public class WorkoutStorage {
         List<String> workouts = new ArrayList<>();
 
         try (Stream<Path> jsonFiles = Files.list(dirPath)) {
-            
+
             jsonFiles.filter(Files::isRegularFile)
                     .filter(path -> path.getFileName().toString().endsWith(".json"))
                     .forEach(path -> workouts.add(path.getFileName().toString()));
