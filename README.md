@@ -4,6 +4,14 @@ Workout Metrics CLI is a command‑line tool for tracking workouts and calculati
 
 ---
 
+## Tech Stack
+- Java 25
+- Maven (build + dependency management)
+- JUnit (unit testing)
+- Jackson (JSON serialization)
+
+---
+
 ##  Highlights
 
 - Log exercises with sets, reps, weight, and muscle group  
